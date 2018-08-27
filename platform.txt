@@ -1,0 +1,103 @@
+
+# Arduino AVR Core and platform.
+# ------------------------------
+#
+# For more info:
+# https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5-3rd-party-Hardware-specification
+
+name=CCore A5
+version=1.0.0
+
+# AVR compile variables
+# ---------------------
+
+compiler.warning_flags=-w
+compiler.warning_flags.none=-w
+compiler.warning_flags.default=
+compiler.warning_flags.more=-Wall
+compiler.warning_flags.all=-Wall -Wextra
+
+# Default "compiler.path" is correct, change only if you want to override the initial value
+complier.toolchain.path={runtime.platform.path}/toolchain/ccore-elf
+compiler.path={complier.toolchain.path}/bin/
+compiler.c.cmd=mcore-elf-gcc
+compiler.c.flags= "-I{runtime.platform.path}/cores/ccore/" "-I{runtime.platform.path}/cores/ccore/api" "-I{runtime.platform.path}/cores/ccore/common" "-I{runtime.platform.path}/cores/ccore/demo" "-I{runtime.platform.path}/cores/ccore/drv/inc" "-I{runtime.platform.path}/cores/ccore/drv/ccore" -O3 -fno-common -ffunction-sections -mlittle-endian -Wall -c
+compiler.c.elf.flags=-EL --gc-sections "-L{complier.toolchain.path}/lib" "-L{complier.toolchain.path}/mcore-elf/lib/c0_div" "-L{complier.toolchain.path}/lib/gcc/mcore-elf/4.6.0/c0_div" -e __start -N -t -warn-common "-T{complier.toolchain.path}/linkmap"
+compiler.c.elf.cmd=mcore-elf-ld
+compiler.S.cmd=mcore-elf-as
+compiler.S.flags=-g -gstabs -EL 
+compiler.cpp.cmd=mcore-elf-g++
+compiler.cpp.flags=-mlittle-endian -O3 -ffunction-sections -Wno-write-strings -Wall -c -fmessage-length=0 "-I{runtime.platform.path}/cores/ccore/" "-I{runtime.platform.path}/cores/ccore/api" "-I{runtime.platform.path}/cores/ccore/common" "-I{runtime.platform.path}/cores/ccore/demo" "-I{runtime.platform.path}/cores/ccore/drv/inc" "-I{runtime.platform.path}/cores/ccore/drv/ccore"
+compiler.ar.cmd=mcore-elf-ar
+compiler.ar.flags=rcs
+compiler.objcopy.cmd=mcore-elf-objcopy
+compiler.objcopy.eep.flags=-O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0
+compiler.elf2hex.flags=-O ihex -R .eeprom
+compiler.elf2hex.cmd=mcore-elf-objcopy
+compiler.ldflags=
+compiler.size.cmd=mcore-elf-size
+
+# This can be overridden in boards.txt
+build.extra_flags=
+
+# These can be overridden in platform.local.txt
+compiler.c.extra_flags=
+compiler.c.elf.extra_flags=
+compiler.S.extra_flags=
+compiler.cpp.extra_flags=
+compiler.ar.extra_flags=
+compiler.objcopy.eep.extra_flags=
+compiler.elf2hex.extra_flags=
+
+# AVR compile patterns
+# --------------------
+
+## Compile c files
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} {compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+
+## Compile c++ files
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+
+## Compile S files
+recipe.S.o.pattern="{compiler.path}{compiler.S.cmd}" {compiler.S.flags} {compiler.S.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+
+## Create archives
+# archive_file_path is needed for backwards compatibility with IDE 1.6.5 or older, IDE 1.6.6 or newer overrides this value
+archive_file_path={build.path}/{archive_file}
+recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}"
+## Combine gc-sections, archives, and objects
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "{build.path}/core/drv/ccore/vector_table.c.o" "{build.path}/core/drv/ccore/vector_rce.c.o" "-L{build.path}" --start-group -lgcc -lc -lg -lBootSwitch -lm -lcmb -lsim -lnosys -lrsa -lsm2 -lalg -lget_serial_sn_lib -lsd --end-group
+
+## Create output files (.eep and .hex)
+#recipe.objcopy.eep.pattern="{compiler.path}{compiler.objcopy.cmd}" {compiler.objcopy.eep.flags} {compiler.objcopy.eep.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.eep"
+#recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} {compiler.elf2hex.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.hex"
+recipe.objcopy.hex.pattern="{compiler.path}{compiler.objcopy.cmd}" -O binary "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
+#recipe.objcopy.eep.pattern="{compiler.path}objdump" "{build.path}/{build.project_name}"
+
+## Save hex
+recipe.output.tmp_file={build.project_name}.bin
+recipe.output.save_file={build.project_name}.{build.variant}.bin
+
+## Compute size
+recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build.project_name}.elf"
+recipe.size.regex=^(?:\.text|\.data|\.bootloader)\s+([0-9]+).*
+recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
+recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
+
+## Preprocessor
+preproc.includes.flags=-w -x c++ -M -MG -MP
+recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags}  {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}"
+
+preproc.macros.flags=-w -x c++ -E -CC
+recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{preprocessed_file_path}"
+
+
+tools.ccprog.path={runtime.platform.path}/tools
+tools.ccprog.cmd=
+tools.ccprog.cmd.linux=ccprog.py
+tools.ccprog.cmd.windows=ccprog.exe
+tools.ccprog.upload.protocol=ccprog
+tools.ccprog.upload.params.verbose=
+tools.ccprog.upload.params.quiet=
+tools.ccprog.upload.pattern="{path}/{cmd}" w -f "{build.path}/{build.project_name}.bin" -t "{serial.port}" -a
+tools.ccprog.upload.pattern.linux="{path}/{cmd}" w -f "{build.path}/{build.project_name}.bin" -t "{serial.port}" -a
