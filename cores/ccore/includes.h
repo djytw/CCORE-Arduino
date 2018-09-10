@@ -13,8 +13,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "type.h"
-#include "common.h"
 #include "iomacros.h"
-#include "debug.h"
 
+void delay_tick(volatile UINT32 val);
+
+extern u32 sysclk,ipsclk,efmclk;
 #endif /* __INCLUDES_H__ */

@@ -67,11 +67,12 @@ def main():
 		print("Open binary ok. File size =",flen,", sha256 =",sha)
 		t.write(b'l')
 		t.flush()
-		tlen='{:x}'.format(flen).encode('utf-8')
+		tlen='{:04x}'.format(flen).encode('utf-8')
 		t.write(tlen);
 		t.flush()
 		if t.read(5) != b'o'+tlen:
 			print("Set length error!")
+			print(tlen);
 			return;
 		t.write(b'w')
 		t.flush()
