@@ -1,8 +1,10 @@
 
 #include <Arduino.h>
 
+HardwareSerial Serial;
 int main(void)
 {
+
 	init();
 
 	initVariant();

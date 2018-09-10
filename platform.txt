@@ -21,13 +21,13 @@ compiler.warning_flags.all=-Wall -Wextra
 complier.toolchain.path={runtime.platform.path}/toolchain/ccore-elf
 compiler.path={complier.toolchain.path}/bin/
 compiler.c.cmd=mcore-elf-gcc
-compiler.c.flags= "-I{runtime.platform.path}/cores/ccore/" "-I{runtime.platform.path}/cores/ccore/api" "-I{runtime.platform.path}/cores/ccore/common" "-I{runtime.platform.path}/cores/ccore/demo" "-I{runtime.platform.path}/cores/ccore/drv/inc" "-I{runtime.platform.path}/cores/ccore/drv/ccore" -O3 -fno-common -ffunction-sections -mlittle-endian -Wall -c
+compiler.c.flags= "-I{runtime.platform.path}/cores/ccore/" "-I{runtime.platform.path}/cores/ccore/api" "-I{runtime.platform.path}/cores/ccore/port" "-I{runtime.platform.path}/cores/ccore/common" "-I{runtime.platform.path}/cores/ccore/demo" "-I{runtime.platform.path}/cores/ccore/drv/inc" "-I{runtime.platform.path}/cores/ccore/drv/ccore" -O3 -fno-common -ffunction-sections -mlittle-endian -Wall -c
 compiler.c.elf.flags=-EL --gc-sections "-L{complier.toolchain.path}/lib" "-L{complier.toolchain.path}/mcore-elf/lib/c0_div" "-L{complier.toolchain.path}/lib/gcc/mcore-elf/4.6.0/c0_div" -e __start -N -t -warn-common "-T{complier.toolchain.path}/linkmap"
 compiler.c.elf.cmd=mcore-elf-ld
 compiler.S.cmd=mcore-elf-as
 compiler.S.flags=-g -gstabs -EL 
 compiler.cpp.cmd=mcore-elf-g++
-compiler.cpp.flags=-mlittle-endian -O3 -ffunction-sections -Wno-write-strings -Wall -c -fmessage-length=0 "-I{runtime.platform.path}/cores/ccore/" "-I{runtime.platform.path}/cores/ccore/api" "-I{runtime.platform.path}/cores/ccore/common" "-I{runtime.platform.path}/cores/ccore/demo" "-I{runtime.platform.path}/cores/ccore/drv/inc" "-I{runtime.platform.path}/cores/ccore/drv/ccore"
+compiler.cpp.flags=-mlittle-endian -O3 -ffunction-sections -Wno-write-strings -Wall -c -fmessage-length=0 "-I{runtime.platform.path}/cores/ccore/" "-I{runtime.platform.path}/cores/ccore/api" "-I{runtime.platform.path}/cores/ccore/port" "-I{runtime.platform.path}/cores/ccore/common" "-I{runtime.platform.path}/cores/ccore/demo" "-I{runtime.platform.path}/cores/ccore/drv/inc" "-I{runtime.platform.path}/cores/ccore/drv/ccore"
 compiler.ar.cmd=mcore-elf-ar
 compiler.ar.flags=rcs
 compiler.objcopy.cmd=mcore-elf-objcopy

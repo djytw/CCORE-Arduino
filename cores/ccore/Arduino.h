@@ -25,6 +25,8 @@
 #include <string.h>
 #include <math.h>
 #include "type.h"
+#include "HardwareSerial.h"
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -168,7 +170,6 @@ long random(long);
 long random(long, long);
 void randomSeed(unsigned long);
 long map(long, long, long, long, long);
-
 
 //#include "pins_arduino.h"
 #endif

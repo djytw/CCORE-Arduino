@@ -28,11 +28,16 @@ typedef double                           FP64;
 
 typedef UINT8 uint8_t;
 typedef UINT16 uint16_t;
-typedef UINT32 uint32_t;
+typedef long unsigned int uint32_t;
+
+typedef INT8 int8_t;
+typedef INT16 int16_t;
+typedef long int int32_t;
 
 typedef UINT8 u8;
 typedef UINT16 u16;
 typedef UINT32 u32;
+typedef unsigned int size_t;
 
 typedef	volatile unsigned      char      VUINT8;
 typedef	volatile signed        char      VINT8;

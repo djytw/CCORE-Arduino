@@ -1,0 +1,1 @@
+//see pins_arduino.h in the variants folder
