@@ -49,6 +49,12 @@ typedef	volatile signed        int       VINT32;
 typedef volatile unsigned long long      VUINT64;
 typedef volatile signed   long long      VINT64;
 
+
+typedef VUINT8 vu8;
+typedef VUINT16 vu16;
+typedef VUINT32 vu32;
+
+
 //typedef          unsigned      long      UINT32;
 //typedef          signed        long      INT32;
 //typedef volatile unsigned      long      VUINT32;
